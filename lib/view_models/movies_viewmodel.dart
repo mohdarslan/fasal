@@ -1,3 +1,4 @@
+import 'package:app/models/movie.dart';
 import 'package:app/models/movies.dart';
 import 'package:app/services/api/api.dart';
 import 'package:app/utils/constants.dart';
@@ -21,6 +22,20 @@ class MoviesViewModel extends ChangeNotifier {
       foundMoviesLoadingStatus = LoadingStatus.COMPLETED;
     } catch (e) {
       foundMoviesLoadingStatus = LoadingStatus.ERROR;
+    }
+    notifyListeners();
+  }
+
+  Movie? movie;
+  LoadingStatus movieDetailLoadingStatus = LoadingStatus.WAITING;
+
+  getMovieDetails({required int movieId}) async {
+    movieDetailLoadingStatus = LoadingStatus.WAITING;
+    try {
+      movie = await API.getMovieDetails(movieId: movieId);
+      movieDetailLoadingStatus = LoadingStatus.COMPLETED;
+    } catch (e) {
+      movieDetailLoadingStatus = LoadingStatus.ERROR;
     }
     notifyListeners();
   }

@@ -1,3 +1,4 @@
+import 'package:app/screens/movies/movie_detail.dart';
 import 'package:app/utils/constants.dart';
 import 'package:app/view_models/movies_viewmodel.dart';
 import 'package:app/widgets/customized_text_button.dart';
@@ -103,7 +104,11 @@ class _HomeScreenState extends State<HomeScreen> {
             children: MoviesViewModel.instance.foundMovies!.results
                 .map((e) => InkWell(
                       onTap: () {
-
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    MovieDetail(movieId: e.id)));
                       },
                       child: Container(
                         margin: EdgeInsets.symmetric(
