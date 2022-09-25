@@ -7,10 +7,4 @@ Color offWhiteColor = Color(0xFFa8a8a8);
 
 BorderRadius borderRadius = BorderRadius.circular(4);
 
-
-enum LoadingStatus {
-WAITING,
-COMPLETED,
-EMPTY,
-ERROR  
-}
+enum LoadingStatus { WAITING, COMPLETED, EMPTY, ERROR }

@@ -1,3 +1,4 @@
+import 'package:app/screens/home.dart';
 import 'package:app/screens/login/login.dart';
 import 'package:app/services/authentication.dart';
 import 'package:app/utils/constants.dart';
@@ -139,7 +140,11 @@ class _OTPScreenState extends State<OTPScreen> {
                                                         widget.phone);
                                             _isVerifying.value = false;
                                             if (userCredential?.user != null) {
-
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          HomeScreen()));
                                             } else {
                                               print('could not authenticate');
                                             }
