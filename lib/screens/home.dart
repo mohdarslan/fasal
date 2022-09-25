@@ -1,4 +1,5 @@
 import 'package:app/screens/movies/movie_detail.dart';
+import 'package:app/screens/search/search.dart';
 import 'package:app/utils/constants.dart';
 import 'package:app/view_models/movies_viewmodel.dart';
 import 'package:app/widgets/customized_text_button.dart';
@@ -35,146 +36,33 @@ class _HomeScreenState extends State<HomeScreen> {
           16.horizontalSpace
         ],
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
+      body: CustomScrollView(
+        slivers: [
+          SliverFillRemaining(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              child: Column(
                 children: [
-                  16.verticalSpace,
-                  moviesFound(),
+                  Spacer(),
+                  CustomizedButton(
+                    height: 42,
+                    color: brandColor,
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SearchScreen()));
+                    },
+                    textStyle: TextStyle(fontSize: 18.sp, color: Colors.white),
+                    text: 'Search Movies',
+                  ),
+                  16.verticalSpace
                 ],
               ),
             ),
-            16.verticalSpace,
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              decoration: BoxDecoration(
-                  borderRadius: borderRadius,
-                  border: Border.all(color: brandColor)),
-              child: TextFormField(
-                style: TextStyle(color: offWhiteColor),
-                controller: _controller,
-                decoration: InputDecoration(border: InputBorder.none),
-              ),
-            ),
-            16.verticalSpace,
-            ValueListenableBuilder<bool>(
-                valueListenable: _isFinding,
-                builder: (context, isFinding, child) {
-                  return CustomizedButton(
-                      height: 42,
-                      color: brandColor,
-                      onTap: () async {
-                        _isFinding.value = true;
-                        await MoviesVM.findMovies(query: _controller.text);
-                        _isFinding.value = false;
-                      },
-                      widget: isFinding
-                          ? Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                height: 24.h,
-                                width: 24.h,
-                                child: CircularProgressIndicator(
-                                    color: offWhiteColor),
-                              ),
-                            )
-                          : null,
-                      borderColor: brandColor,
-                      borderRadius: borderRadius,
-                      textStyle: TextStyle(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white),
-                      text: 'Find');
-                }),
-            16.verticalSpace
-          ],
-        ),
+          )
+        ],
       ),
     );
-  }
-
-  Widget moviesFound() {
-    switch (MoviesViewModel.instance.foundMoviesLoadingStatus) {
-      case LoadingStatus.COMPLETED:
-        return Column(
-            children: MoviesViewModel.instance.foundMovies!.results
-                .map((e) => InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    MovieDetail(movieId: e.id)));
-                      },
-                      child: Container(
-                        margin: EdgeInsets.symmetric(
-                            horizontal: 16.w, vertical: 8.h),
-                        decoration: BoxDecoration(
-                            borderRadius: borderRadius,
-                            color: offWhiteColor.withOpacity(0.2)),
-                        height: 200,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            if (e.posterPath != null)
-                              Expanded(
-                                flex: 2,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius: borderRadius,
-                                      color: offWhiteColor,
-                                      image: DecorationImage(
-                                          image: NetworkImage(
-                                            e.posterPath!,
-                                          ),
-                                          fit: BoxFit.fitWidth)),
-                                ),
-                              ),
-                            Expanded(
-                                flex: 3,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        e.title,
-                                        style: TextStyle(
-                                            color: offWhiteColor,
-                                            fontSize: 18.sp,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                      8.verticalSpace,
-                                      Text(
-                                        e.overview,
-                                        maxLines: 4,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      8.verticalSpace,
-                                      Text('Average Vote: ${e.voteAverage}')
-                                    ],
-                                  ),
-                                ))
-                          ],
-                        ),
-                      ),
-                    ))
-                .toList());
-
-      case LoadingStatus.ERROR:
-        return SizedBox();
-
-      case LoadingStatus.EMPTY:
-        return SizedBox();
-
-      case LoadingStatus.WAITING:
-        return SizedBox();
-    }
   }
 }
