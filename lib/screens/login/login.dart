@@ -1,3 +1,4 @@
+import 'package:app/screens/login/otp.dart';
 import 'package:app/utils/constants.dart';
 import 'package:app/widgets/customized_text_button.dart';
 import 'package:country_picker/country_picker.dart';
@@ -118,6 +119,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 onTap: () {
                   print(_selectedCountry.value.phoneCode);
                   print(_controller.text);
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => OTPScreen(
+                                code: '+' + _selectedCountry.value.phoneCode,
+                                phone: _controller.text,
+                              )));
                 })
           ],
         ),
