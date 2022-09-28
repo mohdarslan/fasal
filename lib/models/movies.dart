@@ -2,6 +2,7 @@
 //
 //     final movies = moviesFromJson(jsonString);
 
+import 'package:app/models/movie.dart';
 import 'package:meta/meta.dart';
 import 'dart:convert';
 

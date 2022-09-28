@@ -41,8 +41,8 @@ class Movie {
   bool adult;
   String? backdropPath;
   dynamic? belongsToCollection;
-  int budget;
-  List<Genre> genres;
+  int? budget;
+  List<Genre>? genres;
   String homepage;
   int id;
   String? imdbId;
@@ -72,7 +72,9 @@ class Movie {
                 json["backdrop_path"]),
         belongsToCollection: json["belongs_to_collection"],
         budget: json["budget"],
-        genres: List<Genre>.from(json["genres"].map((x) => Genre.fromJson(x))),
+        genres: json["genres"] == null
+            ? null
+            : List<Genre>.from(json["genres"].map((x) => Genre.fromJson(x))),
         homepage: json["homepage"],
         id: json["id"],
         imdbId: json["imdb_id"],
@@ -110,7 +112,9 @@ class Movie {
         "backdrop_path": backdropPath,
         "belongs_to_collection": belongsToCollection,
         "budget": budget,
-        "genres": List<dynamic>.from(genres.map((x) => x.toJson())),
+        "genres": genres == null
+            ? null
+            : List<dynamic>.from(genres!.map((x) => x.toJson())),
         "homepage": homepage,
         "id": id,
         "imdb_id": imdbId,

@@ -1,4 +1,6 @@
+import 'package:app/screens/home.dart';
 import 'package:app/screens/movies/movie_detail.dart';
+import 'package:app/screens/my_playlists_bottomsheet.dart';
 import 'package:app/utils/constants.dart';
 import 'package:app/view_models/movies_viewmodel.dart';
 import 'package:app/widgets/customized_text_button.dart';
@@ -21,67 +23,81 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     final MoviesVM = Provider.of<MoviesViewModel>(context, listen: true);
 
-    return Scaffold(
-      backgroundColor: backgroundColor,
-      appBar:
-          AppBar(title: Text('Search'), backgroundColor: Colors.transparent),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w),
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                children: [
-                  16.verticalSpace,
-                  moviesFound(),
-                ],
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(),
+          ),
+        );
+        return true;
+      },
+      child: Scaffold(
+        backgroundColor: backgroundColor,
+        appBar:
+            AppBar(title: Text('Search'), backgroundColor: Colors.transparent),
+        body: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  children: [
+                    16.verticalSpace,
+                    moviesFound(),
+                  ],
+                ),
               ),
-            ),
-            16.verticalSpace,
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              decoration: BoxDecoration(
-                  borderRadius: borderRadius,
-                  border: Border.all(color: brandColor)),
-              child: TextFormField(
-                style: TextStyle(color: offWhiteColor),
-                controller: _controller,
-                decoration: InputDecoration(border: InputBorder.none),
+              16.verticalSpace,
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                decoration: BoxDecoration(
+                    borderRadius: borderRadius,
+                    border: Border.all(color: brandColor)),
+                child: TextFormField(
+                  style: TextStyle(color: offWhiteColor),
+                  controller: _controller,
+                  decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Please enter',
+                      hintStyle: TextStyle(color: offWhiteColor)),
+                ),
               ),
-            ),
-            16.verticalSpace,
-            ValueListenableBuilder<bool>(
-                valueListenable: _isFinding,
-                builder: (context, isFinding, child) {
-                  return CustomizedButton(
-                      height: 42,
-                      color: brandColor,
-                      onTap: () async {
-                        _isFinding.value = true;
-                        await MoviesVM.findMovies(query: _controller.text);
-                        _isFinding.value = false;
-                      },
-                      widget: isFinding
-                          ? Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                height: 24.h,
-                                width: 24.h,
-                                child: CircularProgressIndicator(
-                                    color: offWhiteColor),
-                              ),
-                            )
-                          : null,
-                      borderColor: brandColor,
-                      borderRadius: borderRadius,
-                      textStyle: TextStyle(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white),
-                      text: 'Find');
-                }),
-            16.verticalSpace
-          ],
+              16.verticalSpace,
+              ValueListenableBuilder<bool>(
+                  valueListenable: _isFinding,
+                  builder: (context, isFinding, child) {
+                    return CustomizedButton(
+                        height: 42,
+                        color: brandColor,
+                        onTap: () async {
+                          _isFinding.value = true;
+                          await MoviesVM.findMovies(query: _controller.text);
+                          _isFinding.value = false;
+                        },
+                        widget: isFinding
+                            ? Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  height: 24.h,
+                                  width: 24.h,
+                                  child: CircularProgressIndicator(
+                                      color: offWhiteColor),
+                                ),
+                              )
+                            : null,
+                        borderColor: brandColor,
+                        borderRadius: borderRadius,
+                        textStyle: TextStyle(
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white),
+                        text: 'Find');
+                  }),
+              16.verticalSpace
+            ],
+          ),
         ),
       ),
     );
@@ -147,7 +163,40 @@ class _SearchScreenState extends State<SearchScreen> {
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                       8.verticalSpace,
-                                      Text('Average Vote: ${e.voteAverage}')
+                                      Text('Average Vote: ${e.voteAverage}'),
+                                      Spacer(),
+                                      InkWell(
+                                        onTap: () {
+                                          showModalBottomSheet(
+                                              context: context,
+                                              isScrollControlled: true,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.only(
+                                                    topLeft:
+                                                        Radius.circular(16),
+                                                    topRight:
+                                                        Radius.circular(16)),
+                                              ),
+                                              builder: (context) =>
+                                                  MyPlaylists(movie: e));
+                                          //add to playlists
+                                        },
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                              'Add to playlist',
+                                              style:
+                                                  TextStyle(color: brandColor),
+                                            ),
+                                            Icon(
+                                              Icons.add,
+                                              color: offWhiteColor,
+                                            )
+                                          ],
+                                        ),
+                                      )
                                     ],
                                   ),
                                 ))
